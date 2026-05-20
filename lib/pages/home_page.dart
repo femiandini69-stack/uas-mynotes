@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../db/db_helper.dart';
 import '../models/note_model.dart';
 import 'note_editor_page.dart';
+import 'profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -241,46 +242,57 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-      child: Row(
-        children: [
-          const Expanded(
-            child: Text(
-              'My Notes',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -1,
-                color: Color(0xFF1F2937),
-              ),
+ Widget _buildHeader() {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+    child: Row(
+      children: [
+        const Expanded(
+          child: Text(
+            'My Notes',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -1,
+              color: Color(0xFF1F2937),
             ),
           ),
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 14,
-                  offset: const Offset(0, 6),
+        ),
+
+        // TOMBOL PROFILE SAJA
+        Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFFEEEAFE),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF6C63FF).withOpacity(0.12),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfilePage(
+                    username: 'User',
+                  ),
                 ),
-              ],
-            ),
-            child: IconButton(
-              onPressed: loadNotes,
-              icon: const Icon(
-                Icons.refresh_rounded,
-                color: Color.fromARGB(255, 243, 79, 166),
-              ),
+              );
+            },
+            icon: const Icon(
+              Icons.person_rounded,
+              color: Color(0xFF6C63FF),
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildSearchBar() {
     return Padding(

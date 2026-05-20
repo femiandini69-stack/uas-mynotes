@@ -8,10 +8,7 @@ import '../models/note_model.dart';
 class NoteEditorPage extends StatefulWidget {
   final Note? note;
 
-  const NoteEditorPage({
-    super.key,
-    this.note,
-  });
+  const NoteEditorPage({super.key, this.note});
 
   @override
   State<NoteEditorPage> createState() => _NoteEditorPageState();
@@ -37,12 +34,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
   String lastText = '';
   bool isUndoRedoAction = false;
 
-  final List<String> categories = [
-    'Kuliah',
-    'Pribadi',
-    'Tugas',
-    'Penting',
-  ];
+  final List<String> categories = ['Kuliah', 'Pribadi', 'Tugas', 'Penting'];
 
   @override
   void initState() {
@@ -235,11 +227,24 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     }
   }
 
-  void insertChecklist() {
+  String addStrikeThrough(String text) {
+    return text.split('').map((char) {
+      if (char.trim().isEmpty) return char;
+      return '$char\u0336';
+    }).join();
+  }
+
+  String removeStrikeThrough(String text) {
+    return text.replaceAll('\u0336', '');
+  }
+
+  void toggleChecklistLine() {
     final text = contentController.text;
     final selection = contentController.selection;
 
-    final cursor = selection.baseOffset < 0 ? text.length : selection.baseOffset;
+    final cursor = selection.baseOffset < 0
+        ? text.length
+        : selection.baseOffset;
 
     int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
     int lineEnd = text.indexOf('\n', cursor);
@@ -253,22 +258,58 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     String newLine;
 
     if (currentLine.startsWith('☐ ')) {
-      newLine = currentLine.replaceFirst('☐ ', '☑ ');
+      final cleanText = currentLine.substring(2);
+      newLine = '☑ ${addStrikeThrough(cleanText)}';
     } else if (currentLine.startsWith('☑ ')) {
-      newLine = currentLine.replaceFirst('☑ ', '☐ ');
+      final cleanText = removeStrikeThrough(currentLine.substring(2));
+      newLine = '☐ $cleanText';
     } else if (currentLine.trim().isEmpty) {
       newLine = '☐ ';
     } else {
-      newLine = '☐ $currentLine';
+      final cleanText = removeStrikeThrough(currentLine);
+      newLine = '☐ $cleanText';
     }
 
     final newText = text.replaceRange(lineStart, lineEnd, newLine);
 
     contentController.text = newText;
-
-    final newCursorPosition = lineStart + newLine.length;
     contentController.selection = TextSelection.fromPosition(
-      TextPosition(offset: newCursorPosition),
+      TextPosition(offset: lineStart + newLine.length),
+    );
+
+    setState(() {});
+  }
+
+  void clearChecklistLine() {
+    final text = contentController.text;
+    final selection = contentController.selection;
+
+    final cursor = selection.baseOffset < 0
+        ? text.length
+        : selection.baseOffset;
+
+    int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
+    int lineEnd = text.indexOf('\n', cursor);
+
+    if (lineEnd == -1) {
+      lineEnd = text.length;
+    }
+
+    String currentLine = text.substring(lineStart, lineEnd);
+
+    if (currentLine.startsWith('☐ ')) {
+      currentLine = currentLine.substring(2);
+    } else if (currentLine.startsWith('☑ ')) {
+      currentLine = currentLine.substring(2);
+    }
+
+    final cleanLine = removeStrikeThrough(currentLine);
+
+    final newText = text.replaceRange(lineStart, lineEnd, cleanLine);
+
+    contentController.text = newText;
+    contentController.selection = TextSelection.fromPosition(
+      TextPosition(offset: lineStart + cleanLine.length),
     );
 
     setState(() {});
@@ -335,17 +376,13 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
             onPressed: canUndo ? undo : null,
             icon: const Icon(Icons.undo_rounded),
             iconSize: 28,
-            color: canUndo
-                ? const Color(0xFF202124)
-                : const Color(0xFFC8CBD2),
+            color: canUndo ? const Color(0xFF202124) : const Color(0xFFC8CBD2),
           ),
           IconButton(
             onPressed: canRedo ? redo : null,
             icon: const Icon(Icons.redo_rounded),
             iconSize: 28,
-            color: canRedo
-                ? const Color(0xFF202124)
-                : const Color(0xFFC8CBD2),
+            color: canRedo ? const Color(0xFF202124) : const Color(0xFFC8CBD2),
           ),
           Container(
             margin: const EdgeInsets.only(left: 4),
@@ -354,7 +391,12 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: const Color.fromARGB(255, 244, 118, 183).withOpacity(0.35),
+                  color: const Color.fromARGB(
+                    255,
+                    244,
+                    118,
+                    183,
+                  ).withOpacity(0.35),
                   blurRadius: 14,
                   offset: const Offset(0, 6),
                 ),
@@ -417,16 +459,9 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         ),
         Text(
           currentDateText,
-          style: const TextStyle(
-            fontSize: 14,
-            color: Color(0xFF8A8D96),
-          ),
+          style: const TextStyle(fontSize: 14, color: Color(0xFF8A8D96)),
         ),
-        Container(
-          width: 1,
-          height: 18,
-          color: const Color(0xFFD8DAE0),
-        ),
+        Container(width: 1, height: 18, color: const Color(0xFFD8DAE0)),
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 4),
           decoration: BoxDecoration(
@@ -444,10 +479,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         ),
         Text(
           '$characterCount karakter',
-          style: const TextStyle(
-            fontSize: 14,
-            color: Color(0xFF8A8D96),
-          ),
+          style: const TextStyle(fontSize: 14, color: Color(0xFF8A8D96)),
         ),
       ],
     );
@@ -506,10 +538,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       decoration: const InputDecoration(
         border: InputBorder.none,
         hintText: 'Tulis catatan kamu di sini...',
-        hintStyle: TextStyle(
-          fontSize: 20,
-          color: Color(0xFFB8BBC4),
-        ),
+        hintStyle: TextStyle(fontSize: 20, color: Color(0xFFB8BBC4)),
         isDense: true,
         contentPadding: EdgeInsets.zero,
       ),
@@ -536,12 +565,11 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         children: [
           _toolbarIconButton(
             icon: Icons.check_box_outlined,
-            onTap: insertChecklist,
+            onTap: toggleChecklistLine,
           ),
           _toolbarIconButton(
-            icon: Icons.edit_outlined,
-            active: true,
-            onTap: () {},
+            icon: Icons.format_clear_rounded,
+            onTap: clearChecklistLine,
           ),
           _toolbarTextButton(
             text: 'A+',
@@ -614,7 +642,9 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         child: Icon(
           icon,
           size: 24,
-          color: active ? const Color.fromARGB(255, 254, 123, 191) : const Color(0xFF2B2D33),
+          color: active
+              ? const Color.fromARGB(255, 254, 123, 191)
+              : const Color(0xFF2B2D33),
         ),
       ),
     );
@@ -644,7 +674,9 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
             fontWeight: fontWeight,
             fontStyle: fontStyle,
             decoration: decoration,
-            color: active ? const Color.fromARGB(255, 227, 116, 192) : const Color(0xFF2B2D33),
+            color: active
+                ? const Color.fromARGB(255, 227, 116, 192)
+                : const Color(0xFF2B2D33),
           ),
         ),
       ),
