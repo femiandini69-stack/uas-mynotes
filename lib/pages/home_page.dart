@@ -17,13 +17,7 @@ class _HomePageState extends State<HomePage> {
   String selectedCategory = "Semua";
   String searchQuery = "";
 
-  List<String> categories = [
-    "Semua",
-    "Kuliah",
-    "Pribadi",
-    "Tugas",
-    "Penting",
-  ];
+  List<String> categories = ["Semua", "Kuliah", "Pribadi", "Tugas", "Penting"];
 
   @override
   void initState() {
@@ -46,14 +40,10 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  
-
   Future<void> openEditor({Note? note}) async {
     final result = await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => NoteEditorPage(note: note),
-      ),
+      MaterialPageRoute(builder: (context) => NoteEditorPage(note: note)),
     );
 
     if (result == true) {
@@ -100,9 +90,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 28),
           decoration: const BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(28),
-            ),
+            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -134,10 +122,7 @@ class _HomePageState extends State<HomePage> {
               const Text(
                 'Catatan yang dihapus tidak bisa dikembalikan.',
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Color(0xFF6B7280),
-                ),
+                style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
               ),
               const SizedBox(height: 22),
               Row(
@@ -147,9 +132,7 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        side: const BorderSide(
-                          color: Color(0xFFE5E7EB),
-                        ),
+                        side: const BorderSide(color: Color(0xFFE5E7EB)),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -192,7 +175,7 @@ class _HomePageState extends State<HomePage> {
 
       final matchSearch =
           n.title.toLowerCase().contains(searchQuery.toLowerCase()) ||
-              n.content.toLowerCase().contains(searchQuery.toLowerCase());
+          n.content.toLowerCase().contains(searchQuery.toLowerCase());
 
       return matchCategory && matchSearch;
     }).toList();
@@ -202,15 +185,9 @@ class _HomePageState extends State<HomePage> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: const Color.fromARGB(255, 240, 91, 188),
         elevation: 6,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         onPressed: () => openEditor(),
-        child: const Icon(
-          Icons.add_rounded,
-          color: Colors.white,
-          size: 34,
-        ),
+        child: const Icon(Icons.add_rounded, color: Colors.white, size: 34),
       ),
       body: SafeArea(
         child: Column(
@@ -297,9 +274,7 @@ class _HomePageState extends State<HomePage> {
             color: Color(0xFF9CA3AF),
           ),
           hintText: "Cari catatan...",
-          hintStyle: const TextStyle(
-            color: Color(0xFF9CA3AF),
-          ),
+          hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
           filled: true,
           fillColor: Colors.white,
           contentPadding: const EdgeInsets.symmetric(
@@ -370,9 +345,7 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(
-            color: const Color(0xFFEDEEF2),
-          ),
+          border: Border.all(color: const Color(0xFFEDEEF2)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.045),
@@ -465,6 +438,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const Spacer(),
+
                 IconButton(
                   onPressed: () => openEditor(note: note),
                   icon: const Icon(
@@ -472,10 +446,11 @@ class _HomePageState extends State<HomePage> {
                     color: Color(0xFF6B7280),
                   ),
                 ),
+
                 IconButton(
                   onPressed: () => showDeleteConfirmation(note),
                   icon: const Icon(
-                    Icons.delete_outline_rounded,
+                    Icons.delete_outline,
                     color: Color(0xFFEF4444),
                   ),
                 ),

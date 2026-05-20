@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'db/db_helper.dart';
 import 'models/user_model.dart';
-import 'pages/home_page.dart';
+import 'pages/main_page.dart';
 import 'register_page.dart';
 import 'session/session_manager.dart';
 
@@ -57,27 +57,20 @@ class _LoginPageState extends State<LoginPage> {
 
     Navigator.pushReplacement(
       context,
-      MaterialPageRoute(
-        builder: (context) => const HomePage(),
-      ),
+      MaterialPageRoute(builder: (context) => const MainPage()),
     );
   }
 
   void showMessage(String message) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(message),
-        behavior: SnackBarBehavior.floating,
-      ),
+      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
     );
   }
 
   void goToRegister() {
     Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const RegisterPage(),
-      ),
+      MaterialPageRoute(builder: (context) => const RegisterPage()),
     );
   }
 
@@ -105,10 +98,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 8),
               const Text(
                 'Login untuk membuka catatanmu.',
-                style: TextStyle(
-                  fontSize: 15,
-                  color: Color(0xFF6B7280),
-                ),
+                style: TextStyle(fontSize: 15, color: Color(0xFF6B7280)),
               ),
               const SizedBox(height: 38),
               _buildInputLabel('Username'),
@@ -236,10 +226,7 @@ class _LoginPageState extends State<LoginPage> {
               )
             : const Text(
                 'Login',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                ),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
               ),
       ),
     );
@@ -251,9 +238,7 @@ class _LoginPageState extends State<LoginPage> {
       children: [
         const Text(
           'Belum punya akun?',
-          style: TextStyle(
-            color: Color(0xFF6B7280),
-          ),
+          style: TextStyle(color: Color(0xFF6B7280)),
         ),
         TextButton(
           onPressed: goToRegister,
