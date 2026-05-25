@@ -219,22 +219,22 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
-      child: Row(
-        children: [
-          const Expanded(
-            child: Text(
-              'My Notes',
-              style: TextStyle(
-                fontSize: 32,
-                fontWeight: FontWeight.w900,
-                letterSpacing: -1,
-                color: Color(0xFF1F2937),
-              ),
+ Widget _buildHeader() {
+  return Padding(
+    padding: const EdgeInsets.fromLTRB(20, 16, 20, 8),
+    child: Row(
+      children: [
+        const Expanded(
+          child: Text(
+            'My Notes',
+            style: TextStyle(
+              fontSize: 32,
+              fontWeight: FontWeight.w900,
+              letterSpacing: -1,
+              color: Color(0xFF1F2937),
             ),
           ),
+<<<<<<< HEAD
 
           // TOMBOL PROFILE SAJA
           Container(
@@ -259,12 +259,44 @@ class _HomePageState extends State<HomePage> {
                 );
               },
               icon: const Icon(Icons.person_rounded, color: Color(0xFF6C63FF)),
+=======
+        ),
+
+        // TOMBOL PROFILE SAJA
+        Container(
+          decoration: BoxDecoration(
+            color: const Color(0xFFEEEAFE),
+            borderRadius: BorderRadius.circular(16),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF6C63FF).withOpacity(0.12),
+                blurRadius: 14,
+                offset: const Offset(0, 6),
+              ),
+            ],
+          ),
+          child: IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ProfilePage(
+                    username: 'User',
+                  ),
+                ),
+              );
+            },
+            icon: const Icon(
+              Icons.person_rounded,
+              color: Color(0xFF6C63FF),
+>>>>>>> 72b5d37e4f0e227f7432f4952afff92c0ebf9682
             ),
           ),
-        ],
-      ),
-    );
-  }
+        ),
+      ],
+    ),
+  );
+}
 
   Widget _buildSearchBar() {
     return Padding(
