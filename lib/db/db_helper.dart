@@ -123,10 +123,7 @@ class DBHelper {
     return await insertUser(user);
   }
 
-  static Future<UserModel?> loginUser(
-    String username,
-    String password,
-  ) async {
+  static Future<UserModel?> loginUser(String username, String password) async {
     final db = await database;
 
     final result = await db.query(
@@ -181,10 +178,7 @@ class DBHelper {
   static Future<List<Note>> getNotes() async {
     final db = await database;
 
-    final result = await db.query(
-      noteTable,
-      orderBy: 'id DESC',
-    );
+    final result = await db.query(noteTable, orderBy: 'id DESC');
 
     return result.map((map) => Note.fromMap(map)).toList();
   }
@@ -203,10 +197,6 @@ class DBHelper {
   static Future<int> deleteNote(int id) async {
     final db = await database;
 
-    return await db.delete(
-      noteTable,
-      where: 'id = ?',
-      whereArgs: [id],
-    );
+    return await db.delete(noteTable, where: 'id = ?', whereArgs: [id]);
   }
 }

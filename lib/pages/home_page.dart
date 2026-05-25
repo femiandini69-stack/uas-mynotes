@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../db/db_helper.dart';
 import '../models/note_model.dart';
 import 'note_editor_page.dart';
+import 'profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -234,24 +235,30 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+
+          // TOMBOL PROFILE SAJA
           Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: const Color(0xFFEEEAFE),
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: const Color(0xFF6C63FF).withOpacity(0.12),
                   blurRadius: 14,
                   offset: const Offset(0, 6),
                 ),
               ],
             ),
             child: IconButton(
-              onPressed: loadNotes,
-              icon: const Icon(
-                Icons.refresh_rounded,
-                color: Color.fromARGB(255, 243, 79, 166),
-              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ProfilePage(username: 'User'),
+                  ),
+                );
+              },
+              icon: const Icon(Icons.person_rounded, color: Color(0xFF6C63FF)),
             ),
           ),
         ],
@@ -438,7 +445,6 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const Spacer(),
-
                 IconButton(
                   onPressed: () => openEditor(note: note),
                   icon: const Icon(
@@ -446,11 +452,10 @@ class _HomePageState extends State<HomePage> {
                     color: Color(0xFF6B7280),
                   ),
                 ),
-
                 IconButton(
                   onPressed: () => showDeleteConfirmation(note),
                   icon: const Icon(
-                    Icons.delete_outline,
+                    Icons.delete_outline_rounded,
                     color: Color(0xFFEF4444),
                   ),
                 ),
