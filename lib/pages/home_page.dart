@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../db/db_helper.dart';
 import '../models/note_model.dart';
 import 'note_editor_page.dart';
+import 'profile_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -49,6 +50,17 @@ class _HomePageState extends State<HomePage> {
     if (result == true) {
       loadNotes();
     }
+  }
+
+  Future<void> openProfile() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ProfilePage(),
+      ),
+    );
+
+    loadNotes();
   }
 
   Future<void> togglePin(Note note) async {
@@ -234,6 +246,8 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+
+          // Tombol profil
           Container(
             decoration: BoxDecoration(
               color: Colors.white,
@@ -247,9 +261,9 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
             child: IconButton(
-              onPressed: loadNotes,
+              onPressed: openProfile,
               icon: const Icon(
-                Icons.refresh_rounded,
+                Icons.person_rounded,
                 color: Color.fromARGB(255, 243, 79, 166),
               ),
             ),
