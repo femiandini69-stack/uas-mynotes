@@ -4,6 +4,8 @@ class Note {
   final String content;
   final String category;
   final bool isPinned;
+  final bool isFavorite;
+  final bool isArchived;
 
   Note({
     this.id,
@@ -11,6 +13,8 @@ class Note {
     required this.content,
     required this.category,
     this.isPinned = false,
+    this.isFavorite = false,
+    this.isArchived = false,
   });
 
   Map<String, dynamic> toMap() {
@@ -20,6 +24,8 @@ class Note {
       'content': content,
       'category': category,
       'isPinned': isPinned ? 1 : 0,
+      'isFavorite': isFavorite ? 1 : 0,
+      'isArchived': isArchived ? 1 : 0,
     };
   }
 
@@ -30,6 +36,8 @@ class Note {
       content: map['content'] ?? '',
       category: map['category'] ?? 'Kuliah',
       isPinned: map['isPinned'] == 1,
+      isFavorite: map['isFavorite'] == 1,
+      isArchived: map['isArchived'] == 1,
     );
   }
 }

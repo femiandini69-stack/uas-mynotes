@@ -198,6 +198,9 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
             title: title.isEmpty ? 'Tanpa Judul' : title,
             content: content,
             category: selectedCategory,
+            isPinned: false,
+            isFavorite: false,
+            isArchived: false,
           ),
         );
       } else {
@@ -207,7 +210,11 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
             title: title.isEmpty ? 'Tanpa Judul' : title,
             content: content,
             category: selectedCategory,
+
+            // Bagian ini penting agar status pin, favorit, dan arsip tidak hilang saat diedit
             isPinned: widget.note!.isPinned,
+            isFavorite: widget.note!.isFavorite,
+            isArchived: widget.note!.isArchived,
           ),
         );
       }
@@ -242,9 +249,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     final text = contentController.text;
     final selection = contentController.selection;
 
-    final cursor = selection.baseOffset < 0
-        ? text.length
-        : selection.baseOffset;
+    final cursor = selection.baseOffset < 0 ? text.length : selection.baseOffset;
 
     int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
     int lineEnd = text.indexOf('\n', cursor);
@@ -284,9 +289,7 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
     final text = contentController.text;
     final selection = contentController.selection;
 
-    final cursor = selection.baseOffset < 0
-        ? text.length
-        : selection.baseOffset;
+    final cursor = selection.baseOffset < 0 ? text.length : selection.baseOffset;
 
     int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
     int lineEnd = text.indexOf('\n', cursor);

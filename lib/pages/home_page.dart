@@ -29,7 +29,11 @@ class _HomePageState extends State<HomePage> {
   Future<void> loadNotes() async {
     final data = await DBHelper.getNotes();
 
-    data.sort((a, b) {
+    // Catatan yang sudah diarsipkan tidak ditampilkan di Home
+    final activeNotes = data.where((note) => !note.isArchived).toList();
+
+    // Catatan pin tetap muncul di atas
+    activeNotes.sort((a, b) {
       if (a.isPinned == b.isPinned) return 0;
       return a.isPinned ? -1 : 1;
     });
@@ -37,7 +41,7 @@ class _HomePageState extends State<HomePage> {
     if (!mounted) return;
 
     setState(() {
-      notes = data;
+      notes = activeNotes;
     });
   }
 
@@ -71,10 +75,66 @@ class _HomePageState extends State<HomePage> {
         content: note.content,
         category: note.category,
         isPinned: !note.isPinned,
+        isFavorite: note.isFavorite,
+        isArchived: note.isArchived,
       ),
     );
 
     loadNotes();
+  }
+
+  Future<void> toggleFavorite(Note note) async {
+    await DBHelper.updateNote(
+      Note(
+        id: note.id,
+        title: note.title,
+        content: note.content,
+        category: note.category,
+        isPinned: note.isPinned,
+        isFavorite: !note.isFavorite,
+        isArchived: note.isArchived,
+      ),
+    );
+
+    loadNotes();
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          !note.isFavorite
+              ? 'Catatan ditambahkan ke favorit'
+              : 'Catatan dihapus dari favorit',
+        ),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  Future<void> archiveNote(Note note) async {
+    await DBHelper.updateNote(
+      Note(
+        id: note.id,
+        title: note.title,
+        content: note.content,
+        category: note.category,
+        isPinned: note.isPinned,
+        isFavorite: note.isFavorite,
+        isArchived: true,
+      ),
+    );
+
+    loadNotes();
+
+    if (!mounted) return;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Catatan dipindahkan ke arsip'),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
   }
 
   Future<void> deleteNote(Note note) async {
@@ -452,6 +512,30 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ),
                 const Spacer(),
+
+                // Icon favorit: klik untuk simpan/hapus dari favorit
+                IconButton(
+                  onPressed: () => toggleFavorite(note),
+                  icon: Icon(
+                    note.isFavorite
+                        ? Icons.favorite_rounded
+                        : Icons.favorite_outline_rounded,
+                    color: note.isFavorite
+                        ? const Color.fromARGB(255, 243, 79, 166)
+                        : const Color(0xFF6B7280),
+                  ),
+                ),
+
+                // Icon arsip: klik untuk pindahkan catatan ke arsip
+                IconButton(
+                  onPressed: () => archiveNote(note),
+                  icon: const Icon(
+                    Icons.archive_outlined,
+                    color: Color(0xFF6B7280),
+                  ),
+                ),
+
+                // Icon edit
                 IconButton(
                   onPressed: () => openEditor(note: note),
                   icon: const Icon(
@@ -459,6 +543,8 @@ class _HomePageState extends State<HomePage> {
                     color: Color(0xFF6B7280),
                   ),
                 ),
+
+                // Icon hapus
                 IconButton(
                   onPressed: () => showDeleteConfirmation(note),
                   icon: const Icon(

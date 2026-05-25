@@ -23,7 +23,7 @@ class DBHelper {
 
     return await openDatabase(
       path,
-      version: 4,
+      version: 5,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE $userTable(
@@ -39,7 +39,9 @@ class DBHelper {
             title TEXT NOT NULL,
             content TEXT NOT NULL,
             category TEXT NOT NULL,
-            isPinned INTEGER NOT NULL DEFAULT 0
+            isPinned INTEGER NOT NULL DEFAULT 0,
+            isFavorite INTEGER NOT NULL DEFAULT 0,
+            isArchived INTEGER NOT NULL DEFAULT 0
           )
         ''');
       },
@@ -51,6 +53,18 @@ class DBHelper {
           db,
           noteTable,
           'isPinned',
+          'INTEGER NOT NULL DEFAULT 0',
+        );
+        await _addColumnIfNotExists(
+          db,
+          noteTable,
+          'isFavorite',
+          'INTEGER NOT NULL DEFAULT 0',
+        );
+        await _addColumnIfNotExists(
+          db,
+          noteTable,
+          'isArchived',
           'INTEGER NOT NULL DEFAULT 0',
         );
       },
@@ -85,7 +99,9 @@ class DBHelper {
         title TEXT NOT NULL,
         content TEXT NOT NULL,
         category TEXT NOT NULL,
-        isPinned INTEGER NOT NULL DEFAULT 0
+        isPinned INTEGER NOT NULL DEFAULT 0,
+        isFavorite INTEGER NOT NULL DEFAULT 0,
+        isArchived INTEGER NOT NULL DEFAULT 0
       )
     ''');
   }
@@ -199,4 +215,30 @@ class DBHelper {
 
     return await db.delete(noteTable, where: 'id = ?', whereArgs: [id]);
   }
+
+  static Future<List<Note>> getFavoriteNotes() async {
+  final db = await database;
+
+  final result = await db.query(
+    noteTable,
+    where: 'isFavorite = ? AND isArchived = ?',
+    whereArgs: [1, 0],
+    orderBy: 'id DESC',
+  );
+
+  return result.map((map) => Note.fromMap(map)).toList();
+}
+
+static Future<List<Note>> getArchivedNotes() async {
+  final db = await database;
+
+  final result = await db.query(
+    noteTable,
+    where: 'isArchived = ?',
+    whereArgs: [1],
+    orderBy: 'id DESC',
+  );
+
+  return result.map((map) => Note.fromMap(map)).toList();
+}
 }
