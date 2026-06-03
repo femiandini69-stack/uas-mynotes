@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'archive_page.dart';
-import 'favorite_page.dart';
 import 'home_page.dart';
+import 'favorite_page.dart';
+import 'archive_page.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -12,58 +12,69 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int currentIndex = 0;
+  int selectedIndex = 0;
 
-  final List<Widget> pages = const [HomePage(), FavoritePage(), ArchivePage()];
+  final List<Widget> pages = const [
+    HomePage(),
+    FavoritePage(),
+    ArchivePage(),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    const Color bgColor = Color(0xFFFFF7FB);
+    const Color primaryPink = Color(0xFFE992BD);
+    const Color textSoft = Color(0xFF9D7C8D);
+
     return Scaffold(
-      body: pages[currentIndex],
+      backgroundColor: bgColor,
+      body: pages[selectedIndex],
 
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.fromLTRB(16, 0, 16, 18),
+        margin: const EdgeInsets.fromLTRB(16, 0, 16, 14),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(26),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: primaryPink.withOpacity(0.18),
               blurRadius: 18,
               offset: const Offset(0, 8),
             ),
           ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(28),
+          borderRadius: BorderRadius.circular(26),
           child: BottomNavigationBar(
-            currentIndex: currentIndex,
+            currentIndex: selectedIndex,
             onTap: (index) {
               setState(() {
-                currentIndex = index;
+                selectedIndex = index;
               });
             },
-
             backgroundColor: Colors.white,
-            elevation: 0,
-
-            selectedItemColor: const Color(0xFF6C63FF),
-            unselectedItemColor: Colors.grey,
-
-            selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700),
-
+            selectedItemColor: primaryPink,
+            unselectedItemColor: textSoft,
             type: BottomNavigationBarType.fixed,
-
+            elevation: 0,
+            selectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w800,
+              fontSize: 12,
+            ),
+            unselectedLabelStyle: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
+            ),
             items: const [
               BottomNavigationBarItem(
                 icon: Icon(Icons.home_rounded),
-                activeIcon: Icon(Icons.home_filled),
-                label: 'Home',
+                activeIcon: Icon(Icons.home_rounded),
+                label: 'Beranda',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.favorite_border_rounded),
                 activeIcon: Icon(Icons.favorite_rounded),
-                label: 'Favorit',
+                label: 'Favorite',
               ),
               BottomNavigationBarItem(
                 icon: Icon(Icons.archive_outlined),

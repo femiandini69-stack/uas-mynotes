@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'db/db_helper.dart';
-import 'models/user_model.dart';
-import 'pages/main_page.dart';
+import '../db/db_helper.dart';
+import '../pages/main_page.dart';
 import 'register_page.dart';
-import 'session/session_manager.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,11 +12,109 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  bool isPasswordHidden = true;
   bool isLoading = false;
+  bool obscurePassword = true;
+
+  Future<void> login() async {
+    final username = usernameController.text.trim();
+    final password = passwordController.text.trim();
+
+    if (username.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Username dan password wajib diisi'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    try {
+      final user = await DBHelper.loginUser(username, password);
+
+      if (!mounted) return;
+
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const MainPage()),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Username atau password salah'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Login gagal: $e'),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    } finally {
+      if (!mounted) return;
+
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String hintText,
+    required IconData icon,
+    bool obscureText = false,
+    Widget? suffixIcon,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(18),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.pink.withOpacity(0.07),
+            blurRadius: 16,
+            offset: const Offset(0, 7),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        obscureText: obscureText,
+        decoration: InputDecoration(
+          prefixIcon: Icon(
+            icon,
+            color: const Color(0xFFE58CB2),
+          ),
+          suffixIcon: suffixIcon,
+          hintText: hintText,
+          hintStyle: const TextStyle(
+            color: Color(0xFFB98FA3),
+            fontSize: 15,
+          ),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 18,
+          ),
+        ),
+      ),
+    );
+  }
 
   @override
   void dispose() {
@@ -27,230 +123,202 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  Future<void> login() async {
-    final username = usernameController.text.trim();
-    final password = passwordController.text.trim();
-
-    if (username.isEmpty || password.isEmpty) {
-      showMessage('Username dan password wajib diisi');
-      return;
-    }
-
-    setState(() {
-      isLoading = true;
-    });
-
-    final UserModel? user = await DBHelper.loginUser(username, password);
-
-    setState(() {
-      isLoading = false;
-    });
-
-    if (user == null) {
-      showMessage('Username atau password salah');
-      return;
-    }
-
-    await SessionManager.saveLogin();
-
-    if (!mounted) return;
-
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const MainPage()),
-    );
-  }
-
-  void showMessage(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message), behavior: SnackBarBehavior.floating),
-    );
-  }
-
-  void goToRegister() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const RegisterPage()),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    const Color softPink = Color(0xFFF8BBD0);
+    const Color darkPink = Color(0xFFE992BD);
+    const Color textPink = Color(0xFF7A3755);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFC),
+      backgroundColor: const Color(0xFFFFF7FB),
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(24, 38, 24, 24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildLogo(),
-              const SizedBox(height: 34),
-              const Text(
-                'Selamat Datang',
-                style: TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.w900,
-                  letterSpacing: -1,
-                  color: Color(0xFF1F2937),
+              Container(
+                height: 310,
+                width: double.infinity,
+                decoration: const BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [softPink, darkPink],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(38),
+                    bottomRight: Radius.circular(38),
+                  ),
+                ),
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: -35,
+                      left: -25,
+                      child: Container(
+                        width: 130,
+                        height: 130,
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.16),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                    ),
+                    Positioned(
+                      top: 70,
+                      right: 35,
+                      child: Icon(
+                        Icons.spa_rounded,
+                        size: 115,
+                        color: Colors.white.withOpacity(0.45),
+                      ),
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.fromLTRB(28, 35, 28, 32),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Spacer(),
+                          Text(
+                            'Hello!',
+                            style: TextStyle(
+                              fontSize: 42,
+                              fontWeight: FontWeight.w900,
+                              color: Colors.white,
+                              letterSpacing: -1,
+                            ),
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            'Welcome back, let’s login first',
+                            style: TextStyle(
+                              fontSize: 17,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 8),
-              const Text(
-                'Login untuk membuka catatanmu.',
-                style: TextStyle(fontSize: 15, color: Color(0xFF6B7280)),
+
+              Padding(
+                padding: const EdgeInsets.fromLTRB(26, 36, 26, 30),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Login',
+                      style: TextStyle(
+                        fontSize: 34,
+                        fontWeight: FontWeight.w900,
+                        color: textPink,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 30),
+
+                    _buildInputField(
+                      controller: usernameController,
+                      hintText: 'Username',
+                      icon: Icons.person_outline_rounded,
+                    ),
+
+                    _buildInputField(
+                      controller: passwordController,
+                      hintText: 'Password',
+                      icon: Icons.lock_outline_rounded,
+                      obscureText: obscurePassword,
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            obscurePassword = !obscurePassword;
+                          });
+                        },
+                        icon: Icon(
+                          obscurePassword
+                              ? Icons.visibility_off_outlined
+                              : Icons.visibility_outlined,
+                          color: const Color(0xFFE58CB2),
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 18),
+
+                    SizedBox(
+                      width: double.infinity,
+                      height: 56,
+                      child: ElevatedButton(
+                        onPressed: isLoading ? null : login,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: darkPink,
+                          foregroundColor: Colors.white,
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                        ),
+                        child: isLoading
+                            ? const SizedBox(
+                                width: 22,
+                                height: 22,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2.4,
+                                  color: Colors.white,
+                                ),
+                              )
+                            : const Text(
+                                'Login',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 26),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Text(
+                          "Don't have an account? ",
+                          style: TextStyle(
+                            color: Color(0xFF9D7C8D),
+                            fontSize: 14,
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const RegisterPage(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            'Sign Up',
+                            style: TextStyle(
+                              color: Color(0xFFD86C9F),
+                              fontWeight: FontWeight.w800,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(height: 38),
-              _buildInputLabel('Username'),
-              const SizedBox(height: 8),
-              _buildUsernameField(),
-              const SizedBox(height: 18),
-              _buildInputLabel('Password'),
-              const SizedBox(height: 8),
-              _buildPasswordField(),
-              const SizedBox(height: 28),
-              _buildLoginButton(),
-              const SizedBox(height: 22),
-              _buildRegisterLink(),
             ],
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildLogo() {
-    return Container(
-      width: 76,
-      height: 76,
-      decoration: BoxDecoration(
-        color: const Color(0xFFEEEAFE),
-        borderRadius: BorderRadius.circular(26),
-        boxShadow: [
-          BoxShadow(
-            color: const Color.fromARGB(255, 240, 142, 183).withOpacity(0.16),
-            blurRadius: 24,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: const Icon(
-        Icons.edit_note_rounded,
-        size: 44,
-        color: Color.fromARGB(255, 241, 152, 201),
-      ),
-    );
-  }
-
-  Widget _buildInputLabel(String text) {
-    return Text(
-      text,
-      style: const TextStyle(
-        fontSize: 14,
-        fontWeight: FontWeight.w700,
-        color: Color(0xFF374151),
-      ),
-    );
-  }
-
-  Widget _buildUsernameField() {
-    return TextField(
-      controller: usernameController,
-      textInputAction: TextInputAction.next,
-      decoration: InputDecoration(
-        hintText: 'Masukkan username',
-        prefixIcon: const Icon(Icons.person_outline_rounded),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildPasswordField() {
-    return TextField(
-      controller: passwordController,
-      obscureText: isPasswordHidden,
-      textInputAction: TextInputAction.done,
-      onSubmitted: (_) => login(),
-      decoration: InputDecoration(
-        hintText: 'Masukkan password',
-        prefixIcon: const Icon(Icons.lock_outline_rounded),
-        suffixIcon: IconButton(
-          onPressed: () {
-            setState(() {
-              isPasswordHidden = !isPasswordHidden;
-            });
-          },
-          icon: Icon(
-            isPasswordHidden
-                ? Icons.visibility_off_outlined
-                : Icons.visibility_outlined,
-          ),
-        ),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(20),
-          borderSide: BorderSide.none,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoginButton() {
-    return SizedBox(
-      width: double.infinity,
-      height: 56,
-      child: ElevatedButton(
-        onPressed: isLoading ? null : login,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color.fromARGB(255, 247, 153, 215),
-          foregroundColor: Colors.white,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-        ),
-        child: isLoading
-            ? const SizedBox(
-                width: 22,
-                height: 22,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2.4,
-                  color: Colors.white,
-                ),
-              )
-            : const Text(
-                'Login',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800),
-              ),
-      ),
-    );
-  }
-
-  Widget _buildRegisterLink() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text(
-          'Belum punya akun?',
-          style: TextStyle(color: Color(0xFF6B7280)),
-        ),
-        TextButton(
-          onPressed: goToRegister,
-          child: const Text(
-            'Daftar',
-            style: TextStyle(
-              fontWeight: FontWeight.w800,
-              color: Color.fromARGB(255, 240, 142, 207),
-            ),
-          ),
-        ),
-      ],
     );
   }
 }

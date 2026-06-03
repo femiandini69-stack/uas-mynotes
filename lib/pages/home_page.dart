@@ -13,6 +13,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  static const Color bgColor = Color(0xFFFFF7FB);
+  static const Color primaryPink = Color(0xFFE992BD);
+  static const Color lightPink = Color(0xFFFFEAF4);
+  static const Color borderPink = Color(0xFFFFD6E8);
+  static const Color textDark = Color(0xFF7A3755);
+  static const Color textSoft = Color(0xFF9D7C8D);
+  static const Color hintPink = Color(0xFFD8A7BE);
+
   List<Note> notes = [];
 
   String selectedCategory = "Semua";
@@ -171,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                 width: 44,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE5E7EB),
+                  color: borderPink,
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
@@ -187,14 +195,14 @@ class _HomePageState extends State<HomePage> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
-                  color: Color(0xFF1F2937),
+                  color: textDark,
                 ),
               ),
               const SizedBox(height: 8),
               const Text(
                 'Catatan yang dihapus tidak bisa dikembalikan.',
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 14, color: Color(0xFF6B7280)),
+                style: TextStyle(fontSize: 14, color: textSoft),
               ),
               const SizedBox(height: 22),
               Row(
@@ -204,12 +212,15 @@ class _HomePageState extends State<HomePage> {
                       onPressed: () => Navigator.pop(context),
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
-                        side: const BorderSide(color: Color(0xFFE5E7EB)),
+                        side: const BorderSide(color: borderPink),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text('Batal'),
+                      child: const Text(
+                        'Batal',
+                        style: TextStyle(color: textSoft),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -253,9 +264,9 @@ class _HomePageState extends State<HomePage> {
     }).toList();
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFC),
+      backgroundColor: bgColor,
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 240, 91, 188),
+        backgroundColor: primaryPink,
         elevation: 6,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         onPressed: () => openEditor(),
@@ -272,7 +283,7 @@ class _HomePageState extends State<HomePage> {
               child: filteredNotes.isEmpty
                   ? _buildEmptyState()
                   : RefreshIndicator(
-                      color: const Color.fromARGB(255, 222, 77, 178),
+                      color: primaryPink,
                       onRefresh: loadNotes,
                       child: ListView.builder(
                         padding: const EdgeInsets.fromLTRB(16, 0, 16, 90),
@@ -302,7 +313,7 @@ class _HomePageState extends State<HomePage> {
                 fontSize: 32,
                 fontWeight: FontWeight.w900,
                 letterSpacing: -1,
-                color: Color(0xFF1F2937),
+                color: textDark,
               ),
             ),
           ),
@@ -314,7 +325,7 @@ class _HomePageState extends State<HomePage> {
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
+                  color: primaryPink.withOpacity(0.10),
                   blurRadius: 14,
                   offset: const Offset(0, 6),
                 ),
@@ -324,7 +335,7 @@ class _HomePageState extends State<HomePage> {
               onPressed: openProfile,
               icon: const Icon(
                 Icons.person_rounded,
-                color: Color.fromARGB(255, 243, 79, 166),
+                color: primaryPink,
               ),
             ),
           ),
@@ -337,6 +348,7 @@ class _HomePageState extends State<HomePage> {
     return Padding(
       padding: const EdgeInsets.fromLTRB(20, 12, 20, 10),
       child: TextField(
+        cursorColor: primaryPink,
         onChanged: (value) {
           setState(() {
             searchQuery = value;
@@ -345,10 +357,10 @@ class _HomePageState extends State<HomePage> {
         decoration: InputDecoration(
           prefixIcon: const Icon(
             Icons.search_rounded,
-            color: Color(0xFF9CA3AF),
+            color: primaryPink,
           ),
           hintText: "Cari catatan...",
-          hintStyle: const TextStyle(color: Color(0xFF9CA3AF)),
+          hintStyle: const TextStyle(color: hintPink),
           filled: true,
           fillColor: Colors.white,
           contentPadding: const EdgeInsets.symmetric(
@@ -380,21 +392,17 @@ class _HomePageState extends State<HomePage> {
             child: ChoiceChip(
               label: Text(cat),
               selected: isSelected,
-              selectedColor: const Color(0xFFEEEAFE),
+              selectedColor: lightPink,
               backgroundColor: Colors.white,
               showCheckmark: false,
               labelStyle: TextStyle(
-                color: isSelected
-                    ? const Color.fromARGB(255, 240, 119, 184)
-                    : const Color(0xFF6B7280),
+                color: isSelected ? primaryPink : textSoft,
                 fontWeight: FontWeight.w700,
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(22),
                 side: BorderSide(
-                  color: isSelected
-                      ? const Color.fromARGB(255, 250, 124, 193)
-                      : const Color(0xFFE5E7EB),
+                  color: isSelected ? primaryPink : borderPink,
                 ),
               ),
               onSelected: (_) {
@@ -419,10 +427,10 @@ class _HomePageState extends State<HomePage> {
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: const Color(0xFFEDEEF2)),
+          border: Border.all(color: borderPink),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.045),
+              color: primaryPink.withOpacity(0.09),
               blurRadius: 18,
               offset: const Offset(0, 8),
             ),
@@ -439,7 +447,7 @@ class _HomePageState extends State<HomePage> {
                   decoration: BoxDecoration(
                     color: note.isPinned
                         ? const Color(0xFFFFEAEA)
-                        : const Color(0xFFEEEAFE),
+                        : lightPink,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
@@ -448,7 +456,7 @@ class _HomePageState extends State<HomePage> {
                         : Icons.note_alt_outlined,
                     color: note.isPinned
                         ? const Color(0xFFEF4444)
-                        : const Color(0xFF6C63FF),
+                        : primaryPink,
                     size: 22,
                   ),
                 ),
@@ -462,7 +470,7 @@ class _HomePageState extends State<HomePage> {
                       fontSize: 18,
                       height: 1.25,
                       fontWeight: FontWeight.w800,
-                      color: Color(0xFF1F2937),
+                      color: textDark,
                     ),
                   ),
                 ),
@@ -474,7 +482,7 @@ class _HomePageState extends State<HomePage> {
                         : Icons.push_pin_outlined,
                     color: note.isPinned
                         ? const Color(0xFFEF4444)
-                        : const Color(0xFF9CA3AF),
+                        : textSoft,
                   ),
                 ),
               ],
@@ -487,7 +495,7 @@ class _HomePageState extends State<HomePage> {
               style: const TextStyle(
                 fontSize: 14.5,
                 height: 1.55,
-                color: Color(0xFF6B7280),
+                color: textSoft,
               ),
             ),
             const SizedBox(height: 16),
@@ -499,14 +507,14 @@ class _HomePageState extends State<HomePage> {
                     vertical: 6,
                   ),
                   decoration: BoxDecoration(
-                    color: const Color(0xFFEEEAFE),
+                    color: lightPink,
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
                     note.category,
                     style: const TextStyle(
                       fontSize: 12,
-                      color: Color.fromARGB(255, 245, 82, 155),
+                      color: primaryPink,
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -520,9 +528,7 @@ class _HomePageState extends State<HomePage> {
                     note.isFavorite
                         ? Icons.favorite_rounded
                         : Icons.favorite_outline_rounded,
-                    color: note.isFavorite
-                        ? const Color.fromARGB(255, 243, 79, 166)
-                        : const Color(0xFF6B7280),
+                    color: note.isFavorite ? primaryPink : textSoft,
                   ),
                 ),
 
@@ -531,7 +537,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () => archiveNote(note),
                   icon: const Icon(
                     Icons.archive_outlined,
-                    color: Color(0xFF6B7280),
+                    color: textSoft,
                   ),
                 ),
 
@@ -540,7 +546,7 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () => openEditor(note: note),
                   icon: const Icon(
                     Icons.edit_outlined,
-                    color: Color(0xFF6B7280),
+                    color: textSoft,
                   ),
                 ),
 
@@ -570,13 +576,13 @@ class _HomePageState extends State<HomePage> {
             Container(
               padding: const EdgeInsets.all(26),
               decoration: BoxDecoration(
-                color: const Color(0xFFEEEAFE),
+                color: lightPink,
                 borderRadius: BorderRadius.circular(34),
               ),
               child: const Icon(
                 Icons.edit_note_rounded,
                 size: 70,
-                color: Color.fromARGB(255, 240, 62, 142),
+                color: primaryPink,
               ),
             ),
             const SizedBox(height: 22),
@@ -585,7 +591,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w900,
-                color: Color(0xFF1F2937),
+                color: textDark,
               ),
             ),
             const SizedBox(height: 8),
@@ -595,7 +601,7 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(
                 fontSize: 15,
                 height: 1.5,
-                color: Color(0xFF6B7280),
+                color: textSoft,
               ),
             ),
           ],

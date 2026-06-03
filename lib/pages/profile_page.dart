@@ -18,6 +18,15 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  static const Color bgColor = Color(0xFFFFF7FB);
+  static const Color primaryPink = Color(0xFFE992BD);
+  static const Color softPink = Color(0xFFF8BBD0);
+  static const Color lightPink = Color(0xFFFFEAF4);
+  static const Color borderPink = Color(0xFFFFD6E8);
+  static const Color textDark = Color(0xFF7A3755);
+  static const Color textSoft = Color(0xFF9D7C8D);
+  static const Color hintPink = Color(0xFFD8A7BE);
+
   late String username;
 
   int totalNotes = 0;
@@ -84,25 +93,38 @@ class _ProfilePageState extends State<ProfilePage> {
             'Edit Profil',
             style: TextStyle(
               fontWeight: FontWeight.w800,
+              color: textDark,
             ),
           ),
           content: TextField(
             controller: usernameController,
+            cursorColor: primaryPink,
             decoration: InputDecoration(
               labelText: 'Username',
-              prefixIcon: const Icon(Icons.person_outline_rounded),
+              labelStyle: const TextStyle(color: textSoft),
+              prefixIcon: const Icon(
+                Icons.person_outline_rounded,
+                color: primaryPink,
+              ),
               filled: true,
-              fillColor: const Color(0xFFFAFAFC),
-              border: OutlineInputBorder(
+              fillColor: lightPink,
+              enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(18),
-                borderSide: BorderSide.none,
+                borderSide: const BorderSide(color: borderPink),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(18),
+                borderSide: const BorderSide(color: primaryPink, width: 1.5),
               ),
             ),
           ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
+              child: const Text(
+                'Batal',
+                style: TextStyle(color: textSoft),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -121,7 +143,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 showMessage('Profil berhasil diperbarui');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6C63FF),
+                backgroundColor: primaryPink,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Simpan'),
@@ -143,7 +165,10 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           title: const Text(
             'Informasi Akun',
-            style: TextStyle(fontWeight: FontWeight.w800),
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              color: textDark,
+            ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -158,7 +183,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6C63FF),
+                backgroundColor: primaryPink,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Tutup'),
@@ -178,7 +203,7 @@ class _ProfilePageState extends State<ProfilePage> {
             child: Text(
               title,
               style: const TextStyle(
-                color: Color(0xFF6B7280),
+                color: textSoft,
               ),
             ),
           ),
@@ -186,7 +211,7 @@ class _ProfilePageState extends State<ProfilePage> {
             value,
             style: const TextStyle(
               fontWeight: FontWeight.w800,
-              color: Color(0xFF1F2937),
+              color: textDark,
             ),
           ),
         ],
@@ -207,13 +232,22 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               title: const Text(
                 'Notifikasi',
-                style: TextStyle(fontWeight: FontWeight.w800),
+                style: TextStyle(
+                  fontWeight: FontWeight.w800,
+                  color: textDark,
+                ),
               ),
               content: SwitchListTile(
                 value: notificationEnabled,
-                activeColor: const Color(0xFF6C63FF),
-                title: const Text('Aktifkan notifikasi'),
-                subtitle: const Text('Pengingat catatan sederhana'),
+                activeColor: primaryPink,
+                title: const Text(
+                  'Aktifkan notifikasi',
+                  style: TextStyle(color: textDark),
+                ),
+                subtitle: const Text(
+                  'Pengingat catatan sederhana',
+                  style: TextStyle(color: textSoft),
+                ),
                 onChanged: (value) {
                   setDialogState(() {
                     notificationEnabled = value;
@@ -235,7 +269,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6C63FF),
+                    backgroundColor: primaryPink,
                     foregroundColor: Colors.white,
                   ),
                   child: const Text('Simpan'),
@@ -262,7 +296,10 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           title: const Text(
             'Keamanan',
-            style: TextStyle(fontWeight: FontWeight.w800),
+            style: TextStyle(
+              fontWeight: FontWeight.w800,
+              color: textDark,
+            ),
           ),
           content: Column(
             mainAxisSize: MainAxisSize.min,
@@ -270,14 +307,24 @@ class _ProfilePageState extends State<ProfilePage> {
               TextField(
                 controller: oldPasswordController,
                 obscureText: true,
+                cursorColor: primaryPink,
                 decoration: InputDecoration(
                   labelText: 'Password lama',
-                  prefixIcon: const Icon(Icons.lock_outline_rounded),
+                  labelStyle: const TextStyle(color: textSoft),
+                  prefixIcon: const Icon(
+                    Icons.lock_outline_rounded,
+                    color: primaryPink,
+                  ),
                   filled: true,
-                  fillColor: const Color(0xFFFAFAFC),
-                  border: OutlineInputBorder(
+                  fillColor: lightPink,
+                  enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
+                    borderSide: const BorderSide(color: borderPink),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide:
+                        const BorderSide(color: primaryPink, width: 1.5),
                   ),
                 ),
               ),
@@ -285,14 +332,24 @@ class _ProfilePageState extends State<ProfilePage> {
               TextField(
                 controller: newPasswordController,
                 obscureText: true,
+                cursorColor: primaryPink,
                 decoration: InputDecoration(
                   labelText: 'Password baru',
-                  prefixIcon: const Icon(Icons.lock_reset_rounded),
+                  labelStyle: const TextStyle(color: textSoft),
+                  prefixIcon: const Icon(
+                    Icons.lock_reset_rounded,
+                    color: primaryPink,
+                  ),
                   filled: true,
-                  fillColor: const Color(0xFFFAFAFC),
-                  border: OutlineInputBorder(
+                  fillColor: lightPink,
+                  enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none,
+                    borderSide: const BorderSide(color: borderPink),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(18),
+                    borderSide:
+                        const BorderSide(color: primaryPink, width: 1.5),
                   ),
                 ),
               ),
@@ -301,7 +358,10 @@ class _ProfilePageState extends State<ProfilePage> {
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
+              child: const Text(
+                'Batal',
+                style: TextStyle(color: textSoft),
+              ),
             ),
             ElevatedButton(
               onPressed: () {
@@ -315,7 +375,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 showMessage('Password berhasil diperbarui');
               },
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6C63FF),
+                backgroundColor: primaryPink,
                 foregroundColor: Colors.white,
               ),
               child: const Text('Simpan'),
@@ -333,7 +393,7 @@ class _ProfilePageState extends State<ProfilePage> {
       applicationVersion: '1.0.0',
       applicationIcon: const Icon(
         Icons.edit_note_rounded,
-        color: Color(0xFF6C63FF),
+        color: primaryPink,
         size: 42,
       ),
       children: const [
@@ -364,7 +424,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 width: 44,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE5E7EB),
+                  color: borderPink,
                   borderRadius: BorderRadius.circular(20),
                 ),
               ),
@@ -380,7 +440,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.w900,
-                  color: Color(0xFF1F2937),
+                  color: textDark,
                 ),
               ),
               const SizedBox(height: 8),
@@ -389,7 +449,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14,
-                  color: Color(0xFF6B7280),
+                  color: textSoft,
                 ),
               ),
               const SizedBox(height: 22),
@@ -401,13 +461,16 @@ class _ProfilePageState extends State<ProfilePage> {
                       style: OutlinedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 14),
                         side: const BorderSide(
-                          color: Color(0xFFE5E7EB),
+                          color: borderPink,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: const Text('Batal'),
+                      child: const Text(
+                        'Batal',
+                        style: TextStyle(color: textSoft),
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -440,7 +503,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFAFAFC),
+      backgroundColor: bgColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(20, 16, 20, 28),
@@ -467,11 +530,12 @@ class _ProfilePageState extends State<ProfilePage> {
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: borderPink),
           ),
           child: IconButton(
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_back_rounded),
-            color: Color(0xFF1F2937),
+            color: textDark,
           ),
         ),
         const Expanded(
@@ -481,7 +545,7 @@ class _ProfilePageState extends State<ProfilePage> {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
-                color: Color(0xFF1F2937),
+                color: textDark,
               ),
             ),
           ),
@@ -498,8 +562,8 @@ class _ProfilePageState extends State<ProfilePage> {
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
-            Color(0xFF6C63FF),
-            Color(0xFF8B7CFF),
+            softPink,
+            primaryPink,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -507,7 +571,7 @@ class _ProfilePageState extends State<ProfilePage> {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6C63FF).withOpacity(0.25),
+            color: primaryPink.withOpacity(0.25),
             blurRadius: 26,
             offset: const Offset(0, 12),
           ),
@@ -531,7 +595,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: const Icon(
                 Icons.person_rounded,
                 size: 62,
-                color: Color(0xFF6C63FF),
+                color: primaryPink,
               ),
             ),
           ),
@@ -559,7 +623,7 @@ class _ProfilePageState extends State<ProfilePage> {
             label: const Text('Edit Profil'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.white,
-              foregroundColor: const Color(0xFF6C63FF),
+              foregroundColor: primaryPink,
               elevation: 0,
               padding: const EdgeInsets.symmetric(
                 horizontal: 18,
@@ -616,11 +680,11 @@ class _ProfilePageState extends State<ProfilePage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: const Color(0xFFEDEEF2),
+          color: borderPink,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: primaryPink.withOpacity(0.08),
             blurRadius: 16,
             offset: const Offset(0, 8),
           ),
@@ -630,7 +694,7 @@ class _ProfilePageState extends State<ProfilePage> {
         children: [
           Icon(
             icon,
-            color: const Color(0xFF6C63FF),
+            color: primaryPink,
             size: 28,
           ),
           const SizedBox(height: 8),
@@ -639,7 +703,7 @@ class _ProfilePageState extends State<ProfilePage> {
             style: const TextStyle(
               fontSize: 22,
               fontWeight: FontWeight.w900,
-              color: Color(0xFF1F2937),
+              color: textDark,
             ),
           ),
           const SizedBox(height: 2),
@@ -647,7 +711,7 @@ class _ProfilePageState extends State<ProfilePage> {
             title,
             style: const TextStyle(
               fontSize: 12,
-              color: Color(0xFF6B7280),
+              color: textSoft,
             ),
           ),
         ],
@@ -700,7 +764,7 @@ class _ProfilePageState extends State<ProfilePage> {
     required String title,
     required String subtitle,
     required VoidCallback onTap,
-    Color color = const Color(0xFF6C63FF),
+    Color color = primaryPink,
   }) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -708,7 +772,7 @@ class _ProfilePageState extends State<ProfilePage> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(22),
         border: Border.all(
-          color: const Color(0xFFEDEEF2),
+          color: borderPink,
         ),
       ),
       child: ListTile(
@@ -732,19 +796,19 @@ class _ProfilePageState extends State<ProfilePage> {
           title,
           style: const TextStyle(
             fontWeight: FontWeight.w800,
-            color: Color(0xFF1F2937),
+            color: textDark,
           ),
         ),
         subtitle: Text(
           subtitle,
           style: const TextStyle(
             fontSize: 12,
-            color: Color(0xFF6B7280),
+            color: textSoft,
           ),
         ),
         trailing: const Icon(
           Icons.chevron_right_rounded,
-          color: Color(0xFF9CA3AF),
+          color: hintPink,
         ),
       ),
     );
