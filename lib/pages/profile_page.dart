@@ -39,7 +39,18 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     username = widget.username;
+    loadCurrentUser();
     loadProfileData();
+  }
+
+  Future<void> loadCurrentUser() async {
+    final savedUsername = await SessionManager.getUsername();
+
+    if (!mounted) return;
+
+    setState(() {
+      username = savedUsername ?? widget.username;
+    });
   }
 
   Future<void> loadProfileData() async {
@@ -127,7 +138,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 final newUsername = usernameController.text.trim();
 
                 if (newUsername.isEmpty) {
@@ -135,12 +146,38 @@ class _ProfilePageState extends State<ProfilePage> {
                   return;
                 }
 
-                setState(() {
-                  username = newUsername;
-                });
+                if (newUsername == username) {
+                  Navigator.pop(context);
+                  return;
+                }
 
-                Navigator.pop(context);
-                showMessage('Profil berhasil diperbarui');
+                final usernameExists =
+                    await DBHelper.checkUsernameExists(newUsername);
+
+                if (usernameExists) {
+                  showMessage('Username sudah digunakan');
+                  return;
+                }
+
+                final result = await DBHelper.updateUsername(
+                  oldUsername: username,
+                  newUsername: newUsername,
+                );
+
+                if (result > 0) {
+                  await SessionManager.updateUsername(newUsername);
+
+                  if (!mounted) return;
+
+                  setState(() {
+                    username = newUsername;
+                  });
+
+                  Navigator.pop(context);
+                  showMessage('Profil berhasil diperbarui');
+                } else {
+                  showMessage('Gagal memperbarui profil');
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryPink,
@@ -323,8 +360,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(18),
-                    borderSide:
-                        const BorderSide(color: primaryPink, width: 1.5),
+                    borderSide: const BorderSide(
+                      color: primaryPink,
+                      width: 1.5,
+                    ),
                   ),
                 ),
               ),
@@ -348,8 +387,10 @@ class _ProfilePageState extends State<ProfilePage> {
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(18),
-                    borderSide:
-                        const BorderSide(color: primaryPink, width: 1.5),
+                    borderSide: const BorderSide(
+                      color: primaryPink,
+                      width: 1.5,
+                    ),
                   ),
                 ),
               ),
@@ -364,15 +405,34 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),
             ElevatedButton(
-              onPressed: () {
-                if (oldPasswordController.text.isEmpty ||
-                    newPasswordController.text.isEmpty) {
+              onPressed: () async {
+                final oldPassword = oldPasswordController.text.trim();
+                final newPassword = newPasswordController.text.trim();
+
+                if (oldPassword.isEmpty || newPassword.isEmpty) {
                   showMessage('Semua field wajib diisi');
                   return;
                 }
 
-                Navigator.pop(context);
-                showMessage('Password berhasil diperbarui');
+                if (newPassword.length < 4) {
+                  showMessage('Password baru minimal 4 karakter');
+                  return;
+                }
+
+                final success = await DBHelper.updatePassword(
+                  username: username,
+                  oldPassword: oldPassword,
+                  newPassword: newPassword,
+                );
+
+                if (!mounted) return;
+
+                if (success) {
+                  Navigator.pop(context);
+                  showMessage('Password berhasil diperbarui');
+                } else {
+                  showMessage('Password lama salah atau username tidak ditemukan');
+                }
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: primaryPink,

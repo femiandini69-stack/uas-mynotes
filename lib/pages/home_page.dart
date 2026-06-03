@@ -67,9 +67,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> openProfile() async {
     await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (context) => const ProfilePage(),
-      ),
+      MaterialPageRoute(builder: (context) => const ProfilePage()),
     );
 
     loadNotes();
@@ -252,6 +250,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
     final filteredNotes = notes.where((n) {
       final matchCategory =
           selectedCategory == "Semua" || n.category == selectedCategory;
@@ -265,13 +265,22 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: bgColor,
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: primaryPink,
-        elevation: 6,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        onPressed: () => openEditor(),
-        child: const Icon(Icons.add_rounded, color: Colors.white, size: 34),
-      ),
+      resizeToAvoidBottomInset: false,
+      floatingActionButton: isKeyboardOpen
+          ? null
+          : FloatingActionButton(
+              backgroundColor: primaryPink,
+              elevation: 6,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              onPressed: () => openEditor(),
+              child: const Icon(
+                Icons.add_rounded,
+                color: Colors.white,
+                size: 34,
+              ),
+            ),
       body: SafeArea(
         child: Column(
           children: [
@@ -333,10 +342,7 @@ class _HomePageState extends State<HomePage> {
             ),
             child: IconButton(
               onPressed: openProfile,
-              icon: const Icon(
-                Icons.person_rounded,
-                color: primaryPink,
-              ),
+              icon: const Icon(Icons.person_rounded, color: primaryPink),
             ),
           ),
         ],
@@ -355,10 +361,7 @@ class _HomePageState extends State<HomePage> {
           });
         },
         decoration: InputDecoration(
-          prefixIcon: const Icon(
-            Icons.search_rounded,
-            color: primaryPink,
-          ),
+          prefixIcon: const Icon(Icons.search_rounded, color: primaryPink),
           hintText: "Cari catatan...",
           hintStyle: const TextStyle(color: hintPink),
           filled: true,
@@ -401,9 +404,7 @@ class _HomePageState extends State<HomePage> {
               ),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(22),
-                side: BorderSide(
-                  color: isSelected ? primaryPink : borderPink,
-                ),
+                side: BorderSide(color: isSelected ? primaryPink : borderPink),
               ),
               onSelected: (_) {
                 setState(() {
@@ -445,9 +446,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: note.isPinned
-                        ? const Color(0xFFFFEAEA)
-                        : lightPink,
+                    color: note.isPinned ? const Color(0xFFFFEAEA) : lightPink,
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Icon(
@@ -480,9 +479,7 @@ class _HomePageState extends State<HomePage> {
                     note.isPinned
                         ? Icons.push_pin_rounded
                         : Icons.push_pin_outlined,
-                    color: note.isPinned
-                        ? const Color(0xFFEF4444)
-                        : textSoft,
+                    color: note.isPinned ? const Color(0xFFEF4444) : textSoft,
                   ),
                 ),
               ],
@@ -535,19 +532,13 @@ class _HomePageState extends State<HomePage> {
                 // Icon arsip: klik untuk pindahkan catatan ke arsip
                 IconButton(
                   onPressed: () => archiveNote(note),
-                  icon: const Icon(
-                    Icons.archive_outlined,
-                    color: textSoft,
-                  ),
+                  icon: const Icon(Icons.archive_outlined, color: textSoft),
                 ),
 
                 // Icon edit
                 IconButton(
                   onPressed: () => openEditor(note: note),
-                  icon: const Icon(
-                    Icons.edit_outlined,
-                    color: textSoft,
-                  ),
+                  icon: const Icon(Icons.edit_outlined, color: textSoft),
                 ),
 
                 // Icon hapus
@@ -598,11 +589,7 @@ class _HomePageState extends State<HomePage> {
             const Text(
               'Tekan tombol + untuk membuat catatan baru yang estetik.',
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 15,
-                height: 1.5,
-                color: textSoft,
-              ),
+              style: TextStyle(fontSize: 15, height: 1.5, color: textSoft),
             ),
           ],
         ),

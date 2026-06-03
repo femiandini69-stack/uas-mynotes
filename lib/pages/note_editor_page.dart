@@ -210,8 +210,6 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
             title: title.isEmpty ? 'Tanpa Judul' : title,
             content: content,
             category: selectedCategory,
-
-            // Bagian ini penting agar status pin, favorit, dan arsip tidak hilang saat diedit
             isPinned: widget.note!.isPinned,
             isFavorite: widget.note!.isFavorite,
             isArchived: widget.note!.isArchived,
@@ -232,90 +230,6 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
         ),
       );
     }
-  }
-
-  String addStrikeThrough(String text) {
-    return text.split('').map((char) {
-      if (char.trim().isEmpty) return char;
-      return '$char\u0336';
-    }).join();
-  }
-
-  String removeStrikeThrough(String text) {
-    return text.replaceAll('\u0336', '');
-  }
-
-  void toggleChecklistLine() {
-    final text = contentController.text;
-    final selection = contentController.selection;
-
-    final cursor = selection.baseOffset < 0 ? text.length : selection.baseOffset;
-
-    int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
-    int lineEnd = text.indexOf('\n', cursor);
-
-    if (lineEnd == -1) {
-      lineEnd = text.length;
-    }
-
-    final currentLine = text.substring(lineStart, lineEnd);
-
-    String newLine;
-
-    if (currentLine.startsWith('☐ ')) {
-      final cleanText = currentLine.substring(2);
-      newLine = '☑ ${addStrikeThrough(cleanText)}';
-    } else if (currentLine.startsWith('☑ ')) {
-      final cleanText = removeStrikeThrough(currentLine.substring(2));
-      newLine = '☐ $cleanText';
-    } else if (currentLine.trim().isEmpty) {
-      newLine = '☐ ';
-    } else {
-      final cleanText = removeStrikeThrough(currentLine);
-      newLine = '☐ $cleanText';
-    }
-
-    final newText = text.replaceRange(lineStart, lineEnd, newLine);
-
-    contentController.text = newText;
-    contentController.selection = TextSelection.fromPosition(
-      TextPosition(offset: lineStart + newLine.length),
-    );
-
-    setState(() {});
-  }
-
-  void clearChecklistLine() {
-    final text = contentController.text;
-    final selection = contentController.selection;
-
-    final cursor = selection.baseOffset < 0 ? text.length : selection.baseOffset;
-
-    int lineStart = text.lastIndexOf('\n', cursor - 1) + 1;
-    int lineEnd = text.indexOf('\n', cursor);
-
-    if (lineEnd == -1) {
-      lineEnd = text.length;
-    }
-
-    String currentLine = text.substring(lineStart, lineEnd);
-
-    if (currentLine.startsWith('☐ ')) {
-      currentLine = currentLine.substring(2);
-    } else if (currentLine.startsWith('☑ ')) {
-      currentLine = currentLine.substring(2);
-    }
-
-    final cleanLine = removeStrikeThrough(currentLine);
-
-    final newText = text.replaceRange(lineStart, lineEnd, cleanLine);
-
-    contentController.text = newText;
-    contentController.selection = TextSelection.fromPosition(
-      TextPosition(offset: lineStart + cleanLine.length),
-    );
-
-    setState(() {});
   }
 
   Future<bool> handleBackButton() async {
@@ -566,14 +480,6 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
-          _toolbarIconButton(
-            icon: Icons.check_box_outlined,
-            onTap: toggleChecklistLine,
-          ),
-          _toolbarIconButton(
-            icon: Icons.format_clear_rounded,
-            onTap: clearChecklistLine,
-          ),
           _toolbarTextButton(
             text: 'A+',
             active: true,
@@ -624,31 +530,6 @@ class _NoteEditorPageState extends State<NoteEditorPage> {
             },
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _toolbarIconButton({
-    required IconData icon,
-    required VoidCallback onTap,
-    bool active = false,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: active ? const Color(0xFFEEEAFE) : Colors.transparent,
-          borderRadius: BorderRadius.circular(14),
-        ),
-        child: Icon(
-          icon,
-          size: 24,
-          color: active
-              ? const Color.fromARGB(255, 254, 123, 191)
-              : const Color(0xFF2B2D33),
-        ),
       ),
     );
   }

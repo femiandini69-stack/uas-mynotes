@@ -23,7 +23,7 @@ class DBHelper {
 
     return await openDatabase(
       path,
-      version: 5,
+      version: 6,
       onCreate: (db, version) async {
         await db.execute('''
           CREATE TABLE $userTable(
@@ -55,12 +55,14 @@ class DBHelper {
           'isPinned',
           'INTEGER NOT NULL DEFAULT 0',
         );
+
         await _addColumnIfNotExists(
           db,
           noteTable,
           'isFavorite',
           'INTEGER NOT NULL DEFAULT 0',
         );
+
         await _addColumnIfNotExists(
           db,
           noteTable,
@@ -76,6 +78,20 @@ class DBHelper {
           db,
           noteTable,
           'isPinned',
+          'INTEGER NOT NULL DEFAULT 0',
+        );
+
+        await _addColumnIfNotExists(
+          db,
+          noteTable,
+          'isFavorite',
+          'INTEGER NOT NULL DEFAULT 0',
+        );
+
+        await _addColumnIfNotExists(
+          db,
+          noteTable,
+          'isArchived',
           'INTEGER NOT NULL DEFAULT 0',
         );
       },
@@ -177,6 +193,41 @@ class DBHelper {
     return result.map((map) => UserModel.fromMap(map)).toList();
   }
 
+  static Future<int> updateUsername({
+    required String oldUsername,
+    required String newUsername,
+  }) async {
+    final db = await database;
+
+    return await db.update(
+      userTable,
+      {
+        'username': newUsername,
+      },
+      where: 'username = ?',
+      whereArgs: [oldUsername],
+    );
+  }
+
+  static Future<bool> updatePassword({
+  required String username,
+  required String oldPassword,
+  required String newPassword,
+}) async {
+  final db = await database;
+
+  final updatedRows = await db.update(
+    userTable,
+    {
+      'password': newPassword,
+    },
+    where: 'username = ? AND password = ?',
+    whereArgs: [username, oldPassword],
+  );
+
+  return updatedRows > 0;
+}
+
   // =========================
   // NOTES
   // =========================
@@ -194,7 +245,10 @@ class DBHelper {
   static Future<List<Note>> getNotes() async {
     final db = await database;
 
-    final result = await db.query(noteTable, orderBy: 'id DESC');
+    final result = await db.query(
+      noteTable,
+      orderBy: 'id DESC',
+    );
 
     return result.map((map) => Note.fromMap(map)).toList();
   }
@@ -213,32 +267,36 @@ class DBHelper {
   static Future<int> deleteNote(int id) async {
     final db = await database;
 
-    return await db.delete(noteTable, where: 'id = ?', whereArgs: [id]);
+    return await db.delete(
+      noteTable,
+      where: 'id = ?',
+      whereArgs: [id],
+    );
   }
 
   static Future<List<Note>> getFavoriteNotes() async {
-  final db = await database;
+    final db = await database;
 
-  final result = await db.query(
-    noteTable,
-    where: 'isFavorite = ? AND isArchived = ?',
-    whereArgs: [1, 0],
-    orderBy: 'id DESC',
-  );
+    final result = await db.query(
+      noteTable,
+      where: 'isFavorite = ? AND isArchived = ?',
+      whereArgs: [1, 0],
+      orderBy: 'id DESC',
+    );
 
-  return result.map((map) => Note.fromMap(map)).toList();
-}
+    return result.map((map) => Note.fromMap(map)).toList();
+  }
 
-static Future<List<Note>> getArchivedNotes() async {
-  final db = await database;
+  static Future<List<Note>> getArchivedNotes() async {
+    final db = await database;
 
-  final result = await db.query(
-    noteTable,
-    where: 'isArchived = ?',
-    whereArgs: [1],
-    orderBy: 'id DESC',
-  );
+    final result = await db.query(
+      noteTable,
+      where: 'isArchived = ?',
+      whereArgs: [1],
+      orderBy: 'id DESC',
+    );
 
-  return result.map((map) => Note.fromMap(map)).toList();
-}
+    return result.map((map) => Note.fromMap(map)).toList();
+  }
 }

@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../db/db_helper.dart';
-import '../pages/main_page.dart';
+import 'db/db_helper.dart';
+import 'pages/main_page.dart';
 import 'register_page.dart';
+import 'session/session_manager.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -42,9 +43,15 @@ class _LoginPageState extends State<LoginPage> {
       if (!mounted) return;
 
       if (user != null) {
+        await SessionManager.saveLogin(username);
+
+        if (!mounted) return;
+
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MainPage()),
+          MaterialPageRoute(
+            builder: (context) => const MainPage(),
+          ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -95,6 +102,7 @@ class _LoginPageState extends State<LoginPage> {
       child: TextField(
         controller: controller,
         obscureText: obscureText,
+        cursorColor: const Color(0xFFE992BD),
         decoration: InputDecoration(
           prefixIcon: Icon(
             icon,
@@ -134,6 +142,7 @@ class _LoginPageState extends State<LoginPage> {
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Column(
             children: [
               Container(
